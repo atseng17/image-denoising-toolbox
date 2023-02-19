@@ -78,11 +78,15 @@ def evalDae(eval_loader, model, criterion):
 def inferenceDae(eval_loader, model):
 
     model.eval()
+    all_outputs = []
+    all_paths = []
 
     for data in eval_loader:
         with torch.set_grad_enabled(False):
             noisy_imgs = data["image_noisy"]
             noisy_imgs=noisy_imgs.cuda()
             outputs = model(noisy_imgs)
+            all_outputs.extend(outputs)
+            all_paths.extend(data["org_path"])
 
-    return outputs, data["org_path"]
+    return all_outputs, all_paths

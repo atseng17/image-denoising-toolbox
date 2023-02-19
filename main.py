@@ -65,7 +65,7 @@ else:
 
     # save results
     for i in range(len(output)):
-        denoised_fname = org_path[i].replace("test","results").replace(".png","_de.png")
-        transposed_img = np.transpose(output[i], (1, 2, 0))
+        denoised_fname = os.path.join("data/results",os.path.basename(org_path[i]))
+        transposed_img = np.transpose(output[i].detach().cpu().numpy(), (1, 2, 0))
         plt.imsave(denoised_fname,transposed_img)
 
