@@ -5,30 +5,30 @@ import torchvision.transforms as transforms
 from PIL import Image
 import os
 import glob
-
+import numpy as np
 
 #TODO check what transforms are needed
-def get_dataloader(clean_path_train, noisy_path_train, loader_type="inference", batch_size=20, num_workers = 16):
+def get_dataloader(clean_path_train, noisy_path_train, clean_path_eval, noisy_path_eval, noisy_path_test, loader_type="inference", batch_size=20, num_workers = 16):
     if loader_type == "train":
         transform = transforms.Compose([
             transforms.ToTensor(),
         ])
 
         train_data = customDataset(clean_path_train, noisy_path_train, transform)
-        test_data = customDataset(clean_path_train, noisy_path_train, transform)
+        eval_data = customDataset(clean_path_eval, noisy_path_eval, transform)
 
         
         # prepare data loaders
         train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, num_workers=num_workers)
-        test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, num_workers=num_workers)
+        eval_loader = torch.utils.data.DataLoader(eval_data, batch_size=batch_size, num_workers=num_workers)
 
-        return train_loader, test_loader
+        return train_loader, eval_loader
     else:
         transform = transforms.Compose([
             transforms.ToTensor(),
         ])
 
-        test_data = customDataset_inf(noisy_path_train, transform)
+        test_data = customDataset_inf(noisy_path_test, transform)
 
         # prepare data loaders
         test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, num_workers=num_workers)

@@ -16,9 +16,14 @@ batch_size = 40
 num_workers = 16
 learning_rate = 0.01 
 model_save_dir = "model"
-clean_path_train = "data/train/clean"
-noisy_path_train = "data/train/noisy"
-inf_dir = "data/test"
+# clean_path_train = "data/train/clean"
+# noisy_path_train = "data/train/noisy"
+clean_path_train = "data/pwdata/train/clean"
+noisy_path_train = "data/pwdata/train/noisy"
+clean_path_eval = "data/pwdata/val/clean"
+noisy_path_eval = "data/pwdata/val/noisy"
+# inf_dir = "data/test"
+inf_dir = "data/pwdata/test/noisy"
 # task = "train_dae_model"
 task = "denoise"
 
@@ -27,7 +32,7 @@ if task == "train_dae_model":
     print("training dae model")
 
     # initialize data loader
-    train_loader, eval_loader = get_dataloader(clean_path_train, noisy_path_train, "train", batch_size, num_workers)
+    train_loader, eval_loader = get_dataloader(clean_path_train, noisy_path_train, clean_path_eval, noisy_path_eval, None, "train", batch_size, num_workers)
 
     # initialize the model
     model = ConvDenoiser()
@@ -47,7 +52,7 @@ else:
     print("Denoising")
 
     # initialize data loader
-    test_loader = get_dataloader(None, inf_dir, "inference", batch_size, num_workers)
+    test_loader = get_dataloader(None,None,None,None, inf_dir, "inference", batch_size, num_workers)
     
     # initialize the model
     model = torch.load("model/checkpoint_latest.pt")
@@ -57,7 +62,6 @@ else:
     output, org_path = inferenceDae(test_loader, model)
 
     # inference
-    output = output.detach().cpu().numpy()
 
     # save results
     for i in range(len(output)):
