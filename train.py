@@ -56,32 +56,19 @@ def trainDae(train_loader, eval_loader, model, optimizer, criterion,  model_save
 def evalDae(eval_loader, model, criterion):
 
     model.eval()
-    # monitor training loss
     eval_loss = 0.0
     
-    ###################
-    # train the model #
-    ###################
     for data in eval_loader:
         with torch.set_grad_enabled(False):
-            # _ stands in for labels, here
-            # no need to flatten images
             images = data["image_clean"]
-            ## add random noise to the input images
             noisy_imgs = data["image_noisy"]
-            # Clip the images to be between 0 and 1
             noisy_imgs=noisy_imgs.cuda()
             images=images.cuda()
-                    
-            ## forward pass: compute predicted outputs by passing *noisy* images to the model
+
             outputs = model(noisy_imgs)
-            # calculate the loss
-            # the "target" is still the original, not-noisy images
             loss = criterion(outputs, images)
-            # update running training loss
             eval_loss += loss.item()*images.size(0)
             
-    # print avg training statistics 
     eval_loss = eval_loss/len(eval_loader)
     print('Eval Loss: {:.6f}'.format(eval_loss))
     return eval_loss
@@ -91,18 +78,11 @@ def evalDae(eval_loader, model, criterion):
 def inferenceDae(eval_loader, model):
 
     model.eval()
-    # monitor training loss
-    eval_loss = 0.0
-    
-    ###################
-    # train the model #
-    ###################
+
     for data in eval_loader:
         with torch.set_grad_enabled(False):
             noisy_imgs = data["image_noisy"]
             noisy_imgs=noisy_imgs.cuda()
-                    
-            ## forward pass: compute predicted outputs by passing *noisy* images to the model
             outputs = model(noisy_imgs)
 
     return outputs, data["org_path"]

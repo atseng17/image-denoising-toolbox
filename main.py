@@ -22,25 +22,12 @@ inf_dir = "data/test"
 # task = "train_dae_model"
 task = "denoise"
 
-
-
 if task == "train_dae_model":
 
     print("training dae model")
 
     # initialize data loader
     train_loader, eval_loader = get_dataloader(clean_path_train, noisy_path_train, "train", batch_size, num_workers)
-
-
-
-
-    # print(type(train_loader))
-    # for data in train_loader:
-    #     print(data['clean_path'])
-    #     print("-----")
-    #     print(data['noisy_path'])
-
-    #     break
 
     # initialize the model
     model = ConvDenoiser()
@@ -56,9 +43,12 @@ if task == "train_dae_model":
     trainDae(train_loader, eval_loader, model, optimizer, criterion, model_save_dir, n_epochs = 40)
 
 else:
+
+    print("Denoising")
+
     # initialize data loader
     test_loader = get_dataloader(None, inf_dir, "inference", batch_size, num_workers)
-    print("Denoising")
+    
     # initialize the model
     model = torch.load("model/checkpoint_latest.pt")
     model=model.cuda()
@@ -66,18 +56,12 @@ else:
     # inference model
     output, org_path = inferenceDae(test_loader, model)
 
-
+    # inference
     output = output.detach().cpu().numpy()
 
-
+    # save results
     for i in range(len(output)):
         denoised_fname = org_path[i].replace("test","results").replace(".png","_de.png")
-        # save_image(output[i],denoised_fname)
-
-        # plt.imshow(np.transpose(output[i].detach().cpu(), (1, 2, 0))) 
-        # np.transpose(output[i], (1, 2, 0))
         transposed_img = np.transpose(output[i], (1, 2, 0))
         plt.imsave(denoised_fname,transposed_img)
-
-        # output = output[i].detach().cpu()
 

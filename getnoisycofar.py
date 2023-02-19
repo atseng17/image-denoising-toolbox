@@ -5,8 +5,7 @@ import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 from PIL import Image
 from torchvision.utils import save_image
-# from model import *
-# from preprocess import *
+
 
 use_cuda = torch.cuda.is_available()
 # convert data to a normalized torch.FloatTensor
@@ -21,9 +20,7 @@ test_data = datasets.CIFAR10('data', train=False,
 
 
 num_workers = 0
-
 batch_size = 20
-
 # prepare data loaders
 train_loader = torch.utils.data.DataLoader(train_data, batch_size=batch_size, num_workers=num_workers)
 test_loader = torch.utils.data.DataLoader(test_data, batch_size=batch_size, num_workers=num_workers)
