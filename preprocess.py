@@ -60,8 +60,8 @@ class customDataset(torch.utils.data.Dataset):
         image_noisy_path = image_clean_path.replace("clean","noisy")
         image_clean = Image.open(image_clean_path)
         image_noisy = Image.open(image_noisy_path)
-        image_clean = image_clean.convert('RGB')# to rgb scale
-        image_noisy = image_noisy.convert('RGB')# to rgb scale
+        # image_clean = image_clean.convert('RGB')# to rgb scale
+        # image_noisy = image_noisy.convert('RGB')# to rgb scale
 
 
         if self.transform:
@@ -88,7 +88,8 @@ class customDataset_inf(torch.utils.data.Dataset):
             idx = idx.tolist()
         image_noisy_path = self.noisy_img_list[idx]
         image_noisy = Image.open(image_noisy_path)
-        image_noisy = image_noisy.convert('RGB')# to rgb scale
+        # image_noisy = image_noisy.convert('L')# to grey scale
+        # image_noisy = image_noisy.convert('RGB')# to rgb scale
 
         if self.transform:
             image_noisy = self.transform(image_noisy)
