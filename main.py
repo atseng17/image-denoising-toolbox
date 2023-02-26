@@ -12,7 +12,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]='2'
 use_cuda = torch.cuda.is_available()
 
 #parameters
-batch_size = 40
+batch_size = 16
 num_workers = 16
 learning_rate = 0.01 
 model_save_dir = "model"
@@ -22,10 +22,10 @@ clean_path_train = "data/pwdata/train/clean"
 noisy_path_train = "data/pwdata/train/noisy"
 clean_path_eval = "data/pwdata/val/clean"
 noisy_path_eval = "data/pwdata/val/noisy"
-# inf_dir = "data/test"
-inf_model_path = "model/checkpoint_latest_40.pt"
-# task = "train_dae_model"
-task = "denoise"
+inf_dir = "data/test"
+# inf_model_path = "model/checkpoint_latest_40.pt"
+task = "train_dae_model"
+# task = "denoise"
 
 if task == "train_dae_model":
 
@@ -35,8 +35,9 @@ if task == "train_dae_model":
     train_loader, eval_loader = get_dataloader(clean_path_train, noisy_path_train, clean_path_eval, noisy_path_eval, None, "train", batch_size, num_workers)
 
     # initialize the model
-    model = ConvDenoiser()
-    model=model.cuda()
+    # model = ConvDenoiser()
+    model = UNet(n_classes = 1, depth = 4, padding = True)
+    model = model.cuda()
 
     # specify loss function
     criterion = nn.MSELoss()
