@@ -11,7 +11,7 @@ import numpy as np
 def get_dataloader(clean_path_train, noisy_path_train, clean_path_eval, noisy_path_eval, noisy_path_test, loader_type="inference", batch_size=20, num_workers = 16):
     if loader_type == "train":
         transform = transforms.Compose([
-            transforms.Resize(1000),
+            transforms.Resize((64,64)),
             transforms.ToTensor(),
         ])
 

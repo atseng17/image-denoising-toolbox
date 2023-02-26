@@ -52,6 +52,9 @@ class UNet(nn.Module):
         up_mode='upconv',
     ):
         """
+
+        The UNet model takes input sizes which need to be divisible with 32.
+        
         Implementation of
         U-Net: Convolutional Networks for Biomedical Image Segmentation
         (Ronneberger et al., 2015)
