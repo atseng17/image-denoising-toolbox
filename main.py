@@ -23,7 +23,7 @@ noisy_path_train = "data/pwdata/train/noisy"
 clean_path_eval = "data/pwdata/val/clean"
 noisy_path_eval = "data/pwdata/val/noisy"
 # inf_dir = "data/test"
-inf_dir = "data/pwdata/test/noisy"
+inf_model_path = "model/checkpoint_latest_40.pt"
 # task = "train_dae_model"
 task = "denoise"
 
@@ -55,7 +55,7 @@ else:
     test_loader = get_dataloader(None,None,None,None, inf_dir, "inference", batch_size, num_workers)
     
     # initialize the model
-    model = torch.load("model/checkpoint_latest.pt")
+    model = torch.load(inf_model_path)
     model=model.cuda()
     
     # inference model
