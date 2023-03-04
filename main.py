@@ -12,20 +12,20 @@ os.environ["CUDA_VISIBLE_DEVICES"]='2'
 use_cuda = torch.cuda.is_available()
 
 #parameters
-batch_size = 16
+batch_size = 32
 num_workers = 16
 learning_rate = 0.01 
 model_save_dir = "model"
-# clean_path_train = "data/train/clean"
-# noisy_path_train = "data/train/noisy"
-clean_path_train = "data/pwdata/train/clean"
-noisy_path_train = "data/pwdata/train/noisy"
-clean_path_eval = "data/pwdata/val/clean"
-noisy_path_eval = "data/pwdata/val/noisy"
-inf_dir = "data/test"
-# inf_model_path = "model/checkpoint_latest_40.pt"
-task = "train_dae_model"
-# task = "denoise"
+clean_path_train = "data/train/clean"
+noisy_path_train = "data/train/noisy"
+clean_path_eval = "data/val/clean"
+noisy_path_eval = "data/val/noisy"
+result_outout_dir = "data/results/0304"
+inf_dir = "data/test/noisy"
+inf_model_path = "model/checkpoint_latest.pt"
+
+# task = "train_dae_model"
+task = "denoise"
 
 if task == "train_dae_model":
 
@@ -62,11 +62,16 @@ else:
     # inference model
     output, org_path = inferenceDae(test_loader, model)
 
-    # inference
 
     # save results
     for i in range(len(output)):
-        denoised_fname = os.path.join("data/results",os.path.basename(org_path[i]))
-        transposed_img = np.transpose(output[i].detach().cpu().numpy(), (1, 2, 0))
-        plt.imsave(denoised_fname,transposed_img)
+        # new way
+        denoised_fname = os.path.join(result_outout_dir,os.path.basename(org_path[i]))
+        save_image(output[i],denoised_fname)
+
+        # old way
+        # transposed_img = np.transpose(output[i].detach().cpu().numpy(), (1, 2, 0))
+        # plt.imsave(denoised_fname,transposed_img)
+        
+
 
