@@ -4,7 +4,7 @@ import torch
 
 
 
-def trainDae(train_loader, eval_loader, model, optimizer, criterion,  model_save_dir, n_epochs = 40):
+def trainDae(train_loader, eval_loader, model, optimizer, criterion,  model_save_dir, n_epochs = 40,report_eval_every_n_epochs = 10):
     min_eval_loss=np.inf
 
     for epoch in range(1, n_epochs+1):
@@ -43,7 +43,7 @@ def trainDae(train_loader, eval_loader, model, optimizer, criterion,  model_save
         print('Epoch: {} \tTraining Loss: {:.6f}'.format(
             epoch, train_loss/len(train_loader)))
 
-        if epoch%10==0:
+        if epoch%report_eval_every_n_epochs==0:
             
             current_eval_loss = evalDae(eval_loader, model, criterion)
             if current_eval_loss <= min_eval_loss:
