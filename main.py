@@ -15,6 +15,8 @@ use_cuda = torch.cuda.is_available()
 batch_size = 32
 num_workers = 16
 learning_rate = 0.01 
+total_epochs = 200
+report_eval_every = 20
 model_save_dir = "model"
 clean_path_train = "data/train/clean"
 noisy_path_train = "data/train/noisy"
@@ -23,9 +25,8 @@ noisy_path_eval = "data/val/noisy"
 result_outout_dir = "data/results/0304"
 inf_dir = "data/test/noisy"
 inf_model_path = "model/checkpoint_latest.pt"
-
-# task = "train_dae_model"
-task = "denoise"
+task = "train_dae_model"
+# task = "denoise"
 
 if task == "train_dae_model":
 
@@ -46,7 +47,7 @@ if task == "train_dae_model":
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     # train model
-    trainDae(train_loader, eval_loader, model, optimizer, criterion, model_save_dir, n_epochs = 40)
+    trainDae(train_loader, eval_loader, model, optimizer, criterion, model_save_dir, n_epochs = total_epochs, report_eval_every_n_epochs = report_eval_every)
 
 else:
 
