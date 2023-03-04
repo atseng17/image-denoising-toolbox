@@ -4,7 +4,7 @@ from torchvision import datasets
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 from model import *
-from preprocess import *
+from datasets import *
 from train import *
 from torchvision.utils import save_image
 # use gpu
