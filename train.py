@@ -3,9 +3,9 @@ import numpy as np
 import torch
 
 
-
-def trainDae(train_loader, eval_loader, model, optimizer, criterion,  model_save_dir, n_epochs = 40,report_eval_every_n_epochs = 10):
+def trainDae(train_loader, eval_loader, model, criterion, optimizer, scheduler, model_save_dir, n_epochs = 40,report_eval_every_n_epochs = 10):
     min_eval_loss=np.inf
+    learning_rate_list = []
 
     for epoch in range(1, n_epochs+1):
         model.train()
@@ -36,12 +36,18 @@ def trainDae(train_loader, eval_loader, model, optimizer, criterion,  model_save
             loss.backward()
             # perform a single optimization step (parameter update)
             optimizer.step()
+
             # update running training loss
             train_loss += loss.item()*images.size(0)
+        
+        learning_rate_list.append(optimizer.param_groups[0]["lr"])
+        # update scheduler as well
+        scheduler.step()
                 
         # print avg training statistics 
-        print('Epoch: {} \tTraining Loss: {:.6f}'.format(
-            epoch, train_loss/len(train_loader)))
+        print('Epoch: {} \tTraining Loss: {:.6f} \tLR: {}'.format(
+            epoch, train_loss/len(train_loader),optimizer.param_groups[0]["lr"]))
+
 
         if epoch%report_eval_every_n_epochs==0:
             
