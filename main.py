@@ -31,8 +31,8 @@ result_outout_dir = "data/results/0308"
 inf_dir = "data/test/noisy"
 inf_model_path = "model/checkpoint_latest.pt"
 # task = "train_dae_model"
-task = "denoise"
-
+# task = "denoise"
+task = "validate_dae_model"
 if task == "train_dae_model":
 
     print("training dae model")
@@ -59,10 +59,28 @@ if task == "train_dae_model":
     # train model
     trainDae(train_loader, eval_loader, model, criterion, optimizer, scheduler, model_save_dir, n_epochs = total_epochs, report_eval_every_n_epochs = report_eval_every)
 
+elif task == "validate_dae_model":
+    print("validation")
+    noisy_path_eval = inf_dir
+    clean_path_eval = inf_dir.replace("noisy", "clean")
+
+    # initialize data loader
+    val_loader = get_dataloader(None, None, clean_path_eval, noisy_path_eval, None, "validation", batch_size, num_workers)
+
+    # initialize the model
+    model = torch.load(inf_model_path)
+    model=model.cuda()
+
+    # specify loss function
+    criterion = nn.MSELoss()
+
+    # validate model
+    eval_loss = validationDae(val_loader, model, criterion, save_org_pair_dir)
+
+
 else:
 
     print("Denoising")
-
     # initialize data loader
     test_loader = get_dataloader(None,None,None,None, inf_dir, "inference", batch_size, num_workers)
     
@@ -76,13 +94,10 @@ else:
 
     # save results
     for i in range(len(output)):
-        # new way
         denoised_fname = os.path.join(result_outout_dir,os.path.basename(org_path[i]))
         save_image(output[i],denoised_fname)
 
-        # old way
-        # transposed_img = np.transpose(output[i].detach().cpu().numpy(), (1, 2, 0))
-        # plt.imsave(denoised_fname,transposed_img)
+
         
 
 

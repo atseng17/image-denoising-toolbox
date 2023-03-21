@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import torch
-
+from torchvision.utils import save_image
 
 def trainDae(train_loader, eval_loader, model, criterion, optimizer, scheduler, model_save_dir, n_epochs = 40,report_eval_every_n_epochs = 10):
     min_eval_loss=np.inf
@@ -79,6 +79,42 @@ def evalDae(eval_loader, model, criterion):
     print('Eval Loss: {:.6f}'.format(eval_loss))
     return eval_loss
 
+def validationDae(val_loader, model, criterion, save_org_pair_dir=None):
+
+    model.eval()
+    eval_loss = 0.0
+
+    for data in val_loader:
+        with torch.set_grad_enabled(False):
+            clean_imgs = data["image_clean"]
+            noisy_imgs = data["image_noisy"]
+            if save_org_pair_dir:
+                os.makedirs(save_org_pair_dir, exist_ok=True)
+                os.makedirs(os.path.join(save_org_pair_dir,"clean"), exist_ok=True)
+                os.makedirs(os.path.join(save_org_pair_dir,"noisy"), exist_ok=True)
+                os.makedirs(os.path.join(save_org_pair_dir,"denoised"), exist_ok=True)
+                for i in range(len(noisy_imgs)):
+                    clean_img_name = os.path.basename(data["clean_path"][i])
+                    save_image(clean_imgs[i],os.path.join(os.path.join(save_org_pair_dir,"clean"),clean_img_name))
+                    save_image(noisy_imgs[i],os.path.join(os.path.join(save_org_pair_dir,"noisy"),clean_img_name))
+
+
+            noisy_imgs = noisy_imgs.cuda()
+            clean_imgs = clean_imgs.cuda()
+            outputs = model(noisy_imgs)
+            if save_org_pair_dir:
+                for i in range(len(noisy_imgs)):
+                    clean_img_name = os.path.basename(data["clean_path"][i])
+                    save_image(outputs[i],os.path.join(os.path.join(save_org_pair_dir,"denoised"),clean_img_name))
+
+
+            loss = criterion(outputs, clean_imgs)
+            eval_loss += loss.item()*clean_imgs.size(0)
+
+
+    eval_loss = eval_loss/len(val_loader)
+    print('Eval Loss: {:.6f}'.format(eval_loss))
+    return eval_loss
 
 
 def inferenceDae(test_loader, model):
