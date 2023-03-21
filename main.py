@@ -12,6 +12,10 @@ from torch.optim.lr_scheduler import MultiStepLR
 os.environ["CUDA_VISIBLE_DEVICES"]='2'
 use_cuda = torch.cuda.is_available()
 
+# fix seeds
+np.random.seed(0)
+torch.manual_seed(0)
+
 #parameters
 batch_size = 32
 num_workers = 16
