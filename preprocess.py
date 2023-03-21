@@ -12,18 +12,18 @@ SRC_CLEAN = "data/external/syn_subsidence"
 TRAIN_DIR = "data/train"
 VAL_DIR = "data/val"
 TEST_DIR = "data/test"
-if not os.path.exists(TRAIN_DIR):
-    os.makedirs(TRAIN_DIR)
-    os.makedirs(os.path.join(TRAIN_DIR,"clean"))
-    os.makedirs(os.path.join(TRAIN_DIR,"noisy"))
-if not os.path.exists(VAL_DIR):
-    os.makedirs(VAL_DIR)
-    os.makedirs(os.path.join(VAL_DIR,"clean"))
-    os.makedirs(os.path.join(VAL_DIR,"noisy"))
-if not os.path.exists(TEST_DIR):
-    os.makedirs(TEST_DIR)
-    os.makedirs(os.path.join(TEST_DIR,"clean"))
-    os.makedirs(os.path.join(TEST_DIR,"noisy"))
+
+os.makedirs(TRAIN_DIR, exist_ok=True)
+os.makedirs(os.path.join(TRAIN_DIR,f"clean_{NUM_TRAIN+NUM_VAL}"), exist_ok=True)
+os.makedirs(os.path.join(TRAIN_DIR,f"noisy_{NUM_TRAIN+NUM_VAL}"), exist_ok=True)
+
+os.makedirs(VAL_DIR, exist_ok=True)
+os.makedirs(os.path.join(VAL_DIR,f"clean_{NUM_TRAIN+NUM_VAL}"), exist_ok=True)
+os.makedirs(os.path.join(VAL_DIR,f"noisy_{NUM_TRAIN+NUM_VAL}"), exist_ok=True)
+
+os.makedirs(TEST_DIR, exist_ok=True)
+os.makedirs(os.path.join(TEST_DIR,"clean"), exist_ok=True)
+os.makedirs(os.path.join(TEST_DIR,"noisy"), exist_ok=True)
 
 def train_test_split(src_noise,src_clean):
     src_noise_list = glob.glob(os.path.join(src_noise,"*.png"))
