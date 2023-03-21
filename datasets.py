@@ -24,12 +24,25 @@ def get_dataloader(clean_path_train, noisy_path_train, clean_path_eval, noisy_pa
         eval_loader = torch.utils.data.DataLoader(eval_data, batch_size=batch_size, num_workers=num_workers)
 
         return train_loader, eval_loader
-    else:
+    
+    elif  loader_type == "validation":
         transform = transforms.Compose([
             transforms.Resize((96,96)),
-            # transforms.CenterCrop((1000,1000)),
-            # transforms.CenterCrop((100,100)),
-            # transforms.Resize((100,100)),
+            transforms.ToTensor(),
+        ])
+
+        eval_data = customDataset(clean_path_eval, noisy_path_eval, transform)
+
+        
+        # prepare data loaders
+        eval_loader = torch.utils.data.DataLoader(eval_data, batch_size=batch_size, num_workers=num_workers)
+
+        return eval_loader
+
+
+    elif loader_type == "inference":
+        transform = transforms.Compose([
+            transforms.Resize((96,96)),
             transforms.ToTensor(),
         ])
 
@@ -67,6 +80,7 @@ class customDataset(torch.utils.data.Dataset):
         if self.transform:
             image_clean = self.transform(image_clean)
             image_noisy = self.transform(image_noisy)
+        # asdad
         
         sample = {'image_clean': image_clean, 'image_noisy': image_noisy, 'clean_path':image_clean_path, 'noisy_path':image_noisy_path}
 
